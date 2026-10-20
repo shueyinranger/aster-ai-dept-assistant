@@ -66,7 +66,7 @@ export function ChatApp() {
           Aster Machinery 部門 AI 助理
         </h1>
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          MVP 原型 - 目前為模擬回應,尚未串接真實語言模型
+          MVP 原型｜第一層規則把關 ＋ Claude API 回答
         </p>
       </header>
 
