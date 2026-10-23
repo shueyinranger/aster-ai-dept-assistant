@@ -20,20 +20,33 @@ export function ChatApp() {
     sales: [initialGreeting("sales")],
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [followUps, setFollowUps] = useState<Record<DepartmentId, string[]>>({
+    hr: [],
+    sales: [],
+  });
 
   const messages = conversations[activeDepartment];
+  const activeFollowUps = followUps[activeDepartment];
 
-  async function sendMessage(content: string) {
+  async function sendMessage(content: string, options?: { fromFollowUp?: boolean }) {
+    const fromFollowUp = options?.fromFollowUp === true;
     const userMessage: ChatMessage = { role: "user", content };
     const nextMessages = [...messages, userMessage];
     setConversations((prev) => ({ ...prev, [activeDepartment]: nextMessages }));
+    if (!fromFollowUp) {
+      setFollowUps((prev) => ({ ...prev, [activeDepartment]: [] }));
+    }
     setIsLoading(true);
 
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ departmentId: activeDepartment, messages: nextMessages }),
+        body: JSON.stringify({
+          departmentId: activeDepartment,
+          messages: nextMessages,
+          selectedFollowUp: fromFollowUp,
+        }),
       });
 
       if (!res.ok) {
@@ -45,6 +58,7 @@ export function ChatApp() {
         ...prev,
         [activeDepartment]: [...nextMessages, data.reply],
       }));
+      setFollowUps((prev) => ({ ...prev, [activeDepartment]: data.followUps ?? [] }));
     } catch (error) {
       const errorMessage: ChatMessage = {
         role: "assistant",
@@ -90,6 +104,12 @@ export function ChatApp() {
       <ChatWindow
         department={DEPARTMENT_LIST.find((d) => d.id === activeDepartment)!}
         messages={messages}
+        prompts={
+          activeFollowUps.length > 0
+            ? activeFollowUps
+            : DEPARTMENT_LIST.find((d) => d.id === activeDepartment)!.suggestedPrompts
+        }
+        promptsAreFollowUps={activeFollowUps.length > 0}
         isLoading={isLoading}
         onSend={sendMessage}
       />

@@ -4,3 +4,6 @@ node_modules/
 !.env.example
 *.tsbuildinfo
 .DS_Store
+
+# Internal documents (contracts etc.) and their extracted Markdown stay on this machine.
+ai/*/docs/

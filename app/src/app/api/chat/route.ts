@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "請求格式錯誤,需為 JSON" }, { status: 400 });
   }
 
-  const { departmentId, messages } = body;
+  const { departmentId, messages, selectedFollowUp } = body;
 
   if (typeof departmentId !== "string" || !isDepartmentId(departmentId)) {
     return NextResponse.json({ error: "缺少或不支援的 departmentId" }, { status: 400 });
@@ -20,7 +20,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "messages 不可為空" }, { status: 400 });
   }
 
-  const reply = await generateReply(departmentId, messages);
-  const response: ChatResponseBody = { reply };
+  const { reply, followUps } = await generateReply(departmentId, messages, {
+    answerDirectly: selectedFollowUp === true,
+  });
+  const response: ChatResponseBody = { reply, followUps };
   return NextResponse.json(response);
 }

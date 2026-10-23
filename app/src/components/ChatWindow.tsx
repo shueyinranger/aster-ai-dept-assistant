@@ -1,18 +1,32 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { Department } from "@/lib/departments";
 import type { ChatMessage } from "@/types/chat";
 
 interface ChatWindowProps {
   department: Department;
   messages: ChatMessage[];
+  prompts: string[];
+  promptsAreFollowUps: boolean;
   isLoading: boolean;
-  onSend: (content: string) => void;
+  onSend: (content: string, options?: { fromFollowUp?: boolean }) => void;
 }
 
-export function ChatWindow({ department, messages, isLoading, onSend }: ChatWindowProps) {
+export function ChatWindow({
+  department,
+  messages,
+  prompts = [],
+  promptsAreFollowUps,
+  isLoading,
+  onSend,
+}: ChatWindowProps) {
   const [draft, setDraft] = useState("");
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ block: "end" });
+  }, [messages, isLoading]);
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -38,6 +52,11 @@ export function ChatWindow({ department, messages, isLoading, onSend }: ChatWind
               }`}
             >
               {message.content}
+              {message.provider === "online" && (
+                <p className="mt-1 text-[11px] text-zinc-400 dark:text-zinc-500">
+                  本地模型無法使用，由線上模型回答
+                </p>
+              )}
             </div>
           </div>
         ))}
@@ -48,15 +67,19 @@ export function ChatWindow({ department, messages, isLoading, onSend }: ChatWind
             </div>
           </div>
         )}
+        <div ref={bottomRef} />
       </div>
 
       <div className="border-t border-black/10 px-4 py-3 dark:border-white/10">
+        {promptsAreFollowUps && (
+          <p className="mb-2 text-xs text-zinc-500 dark:text-zinc-400">依你的問題，也可以這樣問：</p>
+        )}
         <div className="mb-2 flex flex-wrap gap-2">
-          {department.suggestedPrompts.map((prompt) => (
+          {prompts.map((prompt) => (
             <button
               key={prompt}
               type="button"
-              onClick={() => onSend(prompt)}
+              onClick={() => onSend(prompt, { fromFollowUp: promptsAreFollowUps })}
               disabled={isLoading}
               className="rounded-full border border-black/10 px-3 py-1 text-xs text-zinc-600 transition-colors hover:bg-zinc-50 disabled:opacity-50 dark:border-white/10 dark:text-zinc-300 dark:hover:bg-zinc-900"
             >
