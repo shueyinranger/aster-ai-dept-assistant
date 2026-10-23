@@ -18,3 +18,16 @@
 2. 完成勞健保加保
 3. 領取員工證、電腦設備
 4. 參加新人訓練
+
+## 用友系統時間管理藍圖方案
+- 來源：ai\hr\docs\lwk 用友云项目人力资源系统时间管理蓝图方案.pdf
+
+## HR 基本資料
+- 上班時間 與 公司規定的時間一樣
+- 内部電話為 123
+- 電郵 為 hr@astermachineryp.com
+
+## 内部的資料
+1. storage location is 'ai\hr\docs'
+2. 未是爲markdown檔案，要轉換
+

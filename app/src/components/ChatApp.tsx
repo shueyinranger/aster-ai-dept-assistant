@@ -77,10 +77,10 @@ export function ChatApp() {
     <div className="flex h-full w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm dark:border-white/10 dark:bg-zinc-950">
       <header className="border-b border-black/10 px-6 py-4 dark:border-white/10">
         <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-          Aster Machinery 部門 AI 助理
+          HR 部門 AI 助理
         </h1>
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          MVP 原型｜第一層規則把關 ＋ Claude API 回答
+          MVP 原型｜第一層規則把關 ＋ Local Model 回答
         </p>
       </header>
 

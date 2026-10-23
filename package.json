@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "unpdf": "^1.9.1"
+  }
+}
